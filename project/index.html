@@ -4,18 +4,36 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script src="/socket.io/socket.io.js"></script>
+<style>
+    #messages {
+        height: 500px;
+        max-height: 500px;
+        overflow-y: scroll;
+        background-color: #f3f3f3;
+        padding: 15px;
+    }
+</style>
 <div class="container">
-    <br>
-    <div class="jumbotron">
-        <h1 class="display-4">Send Message</h1>
-        <br>
-        <input id="name" class="form-control" placeholder="Name">
-        <br>
-        <textarea id="message" class="form-control" placeholder="Message"></textarea>
-        <br>
-        <button id="send" class="btn btn-success">Send</button>
-    </div>
-    <div id="messages">
+    <div class="row">
+        <div class="col">
+            <br>
+            <div id="messages"></div>
+            <br>
+            <div class="jumbotron">
+                <input id="name" class="form-control" placeholder="Name">
+                <br>
+                <textarea id="message" class="form-control" placeholder="Message"></textarea>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <button id="delete" class="btn btn-danger btn-sm float-left">Delete Messages</button>
+                    </div>
+                    <div class="col">
+                        <button id="send" class="btn btn-lg btn-success float-right">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -24,25 +42,42 @@
     $(() => {
         $("#send").click(() => {
             var message = {name: $("#name").val(), message: $("#message").val()}
+            $("#message").val('')
             postMessage(message)
+        })
+        $("#delete").click(() => {
+            deleteMessages()
         })
         getMessages()
     })
 
     socket.on('message', addMessage)
+    // socket.on('delete', deleteMessages)
 
     function addMessage(message) {
-        $("#messages").append(`<h4>${message.name}</h4> <p> ${message.message} </p>`)
+        if (message.name == $("#name").val()) {
+            $("#messages").append(`<h5 class="text-right">${message.message}</h5> <p class="text-right"> ${message.name} </p>`)
+        } else {
+            $("#messages").append(`<h5 class="text-left">${message.message}</h5> <p class="text-left"> ${message.name} </p>`)
+        }
+        var textarea = document.getElementById('messages');
+        textarea.scrollTop = textarea.scrollHeight;
     }
 
     function getMessages() {
         $.get('http://localhost:3000/messages', (data) => {
             data.forEach(addMessage)
         })
+        var textarea = document.getElementById('messages');
+        textarea.scrollTop = textarea.scrollHeight;
     }
 
     function postMessage(message) {
         $.post('http://localhost:3000/messages', message)
+    }
+
+    function deleteMessages() {
+        $("#messages").empty()
     }
 
 </script>
