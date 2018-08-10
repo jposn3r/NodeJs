@@ -1,7 +1,5 @@
 # NodeJs 
 
-## NodeJs learning in progress.
-
 ### There are a few simple examples included in this repo:
 
 - Asynchronous tasks & callbacks
