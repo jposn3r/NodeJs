@@ -1,6 +1,6 @@
 # NodeJs 
 
-### There are a few simple examples included in this repo:
+### Examples included in this repo:
 
 - Asynchronous tasks & callbacks
 - Custom module
