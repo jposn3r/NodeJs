@@ -52,7 +52,6 @@
     })
 
     socket.on('message', addMessage)
-    // socket.on('delete', deleteMessages)
 
     function addMessage(message) {
         if (message.name == $("#name").val()) {
